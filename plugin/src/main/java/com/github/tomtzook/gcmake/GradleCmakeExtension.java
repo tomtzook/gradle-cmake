@@ -6,10 +6,11 @@ import org.gradle.api.file.DirectoryProperty;
 
 public abstract class GradleCmakeExtension {
 
-    public abstract DirectoryProperty getOutputDir();
-    public abstract NamedDomainObjectContainer<CmakeBinaryDef> getTargets();
+    public abstract NamedDomainObjectContainer<CmakeBinaryDef> getBinaries();
 
-    public void targets(final Action<? super NamedDomainObjectContainer<CmakeBinaryDef>> action) {
-        action.execute(getTargets());
+    public void binaries(final Action<? super NamedDomainObjectContainer<CmakeBinaryDef>> action) {
+        action.execute(getBinaries());
     }
+
+    public abstract DirectoryProperty getOutputDir();
 }

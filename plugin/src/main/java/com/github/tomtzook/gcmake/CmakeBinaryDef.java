@@ -18,6 +18,6 @@ public abstract class CmakeBinaryDef {
         return mName;
     }
 
-    public abstract RegularFileProperty getCmakeListsFile();
+    public abstract RegularFileProperty getCmakeLists();
     public abstract SetProperty<TargetMachine> getTargetMachines();
 }

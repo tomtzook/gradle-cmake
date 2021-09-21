@@ -21,12 +21,13 @@ public class GradleCmakePlugin implements Plugin<Project> {
         ObjectFactory objectFactory = project.getObjects();
 
         TargetMachineFactory targetMachineFactory = new DefaultTargetMachineFactory(objectFactory);
+        project.getExtensions().add(TargetMachineFactory.class, "machines", targetMachineFactory);
         TargetMachine hostMachine = targetMachineFactory.host();
 
         GradleCmakeExtension extension = project.getExtensions().create("cmake", GradleCmakeExtension.class);
         extension.getOutputDir().convention(project.getLayout().getBuildDirectory().dir("cmake"));
 
-        extension.getTargets().all((target)-> {
+        extension.getBinaries().all((target)-> {
             Set<TargetMachine> targetMachines = new HashSet<>();
             if (!target.getTargetMachines().isPresent()) {
                 targetMachines.add(hostMachine);
@@ -42,7 +43,7 @@ public class GradleCmakePlugin implements Plugin<Project> {
             for (TargetMachine targetMachine : targetMachines) {
                 String name = String.format("%s_%s", target.getName(), targetMachine.getName());
                 project.getComponents().add(new DefaultCmakeBinary(objectFactory, name,
-                        targetMachine, target.getCmakeListsFile()));
+                        targetMachine, target.getCmakeLists()));
             }
         });
 
