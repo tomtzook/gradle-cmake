@@ -22,7 +22,7 @@ public abstract class CmakeBuildTask extends DefaultTask {
     @InputFiles
     public abstract RegularFileProperty getCmakeListsFile();
 
-    @Input
+    @InputFiles
     @Optional
     public abstract RegularFileProperty getToolchainFile();
 

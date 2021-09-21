@@ -1,6 +1,10 @@
 package com.github.tomtzook.gcmake;
 
+import org.gradle.api.NamedDomainObjectContainer;
+
 public interface TargetMachineFactory {
 
-    TargetMachine host();
+    TargetMachine getHost();
+
+    NamedDomainObjectContainer<TargetMachine> getCustomMachines();
 }

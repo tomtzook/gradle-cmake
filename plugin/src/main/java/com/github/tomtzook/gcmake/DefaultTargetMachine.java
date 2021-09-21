@@ -1,14 +1,13 @@
 package com.github.tomtzook.gcmake;
 
-import org.gradle.api.file.RegularFile;
-import org.gradle.api.provider.Provider;
+import org.gradle.api.file.RegularFileProperty;
 
 public class DefaultTargetMachine implements TargetMachine {
 
     private final String mName;
-    private final Provider<RegularFile> mToolchainFile;
+    private final RegularFileProperty mToolchainFile;
 
-    public DefaultTargetMachine(String name, Provider<RegularFile> toolchainFile) {
+    public DefaultTargetMachine(String name, RegularFileProperty toolchainFile) {
         mName = name;
         mToolchainFile = toolchainFile;
     }
@@ -19,7 +18,7 @@ public class DefaultTargetMachine implements TargetMachine {
     }
 
     @Override
-    public Provider<RegularFile> getToolchainFile() {
+    public RegularFileProperty getToolchainFile() {
         return mToolchainFile;
     }
 }

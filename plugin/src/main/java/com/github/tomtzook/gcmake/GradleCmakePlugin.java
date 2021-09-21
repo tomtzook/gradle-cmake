@@ -22,60 +22,62 @@ public class GradleCmakePlugin implements Plugin<Project> {
 
         TargetMachineFactory targetMachineFactory = new DefaultTargetMachineFactory(objectFactory);
         project.getExtensions().add(TargetMachineFactory.class, "machines", targetMachineFactory);
-        TargetMachine hostMachine = targetMachineFactory.host();
+        TargetMachine hostMachine = targetMachineFactory.getHost();
 
         GradleCmakeExtension extension = project.getExtensions().create("cmake", GradleCmakeExtension.class);
         extension.getOutputDir().convention(project.getLayout().getBuildDirectory().dir("cmake"));
 
-        extension.getBinaries().all((target)-> {
-            Set<TargetMachine> targetMachines = new HashSet<>();
-            if (!target.getTargetMachines().isPresent()) {
-                targetMachines.add(hostMachine);
-            } else {
-                Set<TargetMachine> set = target.getTargetMachines().get();
-                if (set.isEmpty()) {
+        project.afterEvaluate((p)-> {
+            extension.getBinaries().all((target)-> {
+                Set<TargetMachine> targetMachines = new HashSet<>();
+                if (!target.getTargetMachines().isPresent()) {
                     targetMachines.add(hostMachine);
                 } else {
-                    targetMachines.addAll(set);
+                    Set<TargetMachine> set = target.getTargetMachines().get();
+                    if (set.isEmpty()) {
+                        targetMachines.add(hostMachine);
+                    } else {
+                        targetMachines.addAll(set);
+                    }
                 }
-            }
 
-            for (TargetMachine targetMachine : targetMachines) {
-                String name = String.format("%s_%s", target.getName(), targetMachine.getName());
-                project.getComponents().add(new DefaultCmakeBinary(objectFactory, name,
-                        targetMachine, target.getCmakeLists()));
-            }
-        });
-
-        project.getComponents().withType(DefaultCmakeBinary.class, (binary)-> {
-            TaskProvider<CmakeBuildTask> cmake = tasks.register(String.format("cmake%s", binary.getName()),
-                CmakeBuildTask.class,
-                (task) -> {
-                    task.getCmakeListsFile().set(binary.getCmakeLists());
-                    task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
-                    task.getOutputDir().set(extension.getOutputDir().dir(binary.getName()));
-                });
-
-            TaskProvider<MakeBuildTask> make = tasks.register(String.format("make%s", binary.getName()),
-                MakeBuildTask.class,
-                (task) -> {
-                    task.dependsOn(cmake.get());
-                    task.getBuildDir().set(cmake.get().getOutputDir());
-                });
-
-            binary.getCompileTask().set(make);
-        });
-
-        tasks.register("cmakeClean", Delete.class,
-            (task) -> {
-                task.delete(extension.getOutputDir());
+                for (TargetMachine targetMachine : targetMachines) {
+                    String name = String.format("%s_%s", target.getName(), targetMachine.getName());
+                    project.getComponents().add(new DefaultCmakeBinary(objectFactory, name,
+                            targetMachine, target.getCmakeLists()));
+                }
             });
 
-        tasks.register("cmakeBuild",
-            (task) -> {
-                project.getComponents().withType(Binary.class, (binary)-> {
-                    task.dependsOn(binary.getCompileTask().get());
-                });
+            project.getComponents().withType(DefaultCmakeBinary.class, (binary)-> {
+                TaskProvider<CmakeBuildTask> cmake = tasks.register(String.format("cmake%s", binary.getName()),
+                        CmakeBuildTask.class,
+                        (task) -> {
+                            task.getCmakeListsFile().set(binary.getCmakeLists());
+                            task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
+                            task.getOutputDir().set(extension.getOutputDir().dir(binary.getName()));
+                        });
+
+                TaskProvider<MakeBuildTask> make = tasks.register(String.format("make%s", binary.getName()),
+                        MakeBuildTask.class,
+                        (task) -> {
+                            task.dependsOn(cmake.get());
+                            task.getBuildDir().set(cmake.get().getOutputDir());
+                        });
+
+                binary.getCompileTask().set(make);
             });
+
+            tasks.register("cmakeClean", Delete.class,
+                    (task) -> {
+                        task.delete(extension.getOutputDir());
+                    });
+
+            tasks.register("cmakeBuild",
+                    (task) -> {
+                        project.getComponents().withType(Binary.class, (binary)-> {
+                            task.dependsOn(binary.getCompileTask().get());
+                        });
+                    });
+        });
     }
 }
