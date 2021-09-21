@@ -5,12 +5,12 @@ import org.gradle.api.provider.SetProperty;
 
 import javax.inject.Inject;
 
-public abstract class CmakeBinaryDef {
+public abstract class CmakeTarget {
 
     private final String mName;
 
     @Inject
-    public CmakeBinaryDef(String name) {
+    public CmakeTarget(String name) {
         mName = name;
     }
 
@@ -20,4 +20,5 @@ public abstract class CmakeBinaryDef {
 
     public abstract RegularFileProperty getCmakeLists();
     public abstract SetProperty<TargetMachine> getTargetMachines();
+
 }

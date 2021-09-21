@@ -4,6 +4,7 @@ import com.github.tomtzook.gcmake.tasks.CmakeBuildTask;
 import com.github.tomtzook.gcmake.tasks.MakeBuildTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.TaskContainer;
@@ -28,7 +29,7 @@ public class GradleCmakePlugin implements Plugin<Project> {
         extension.getOutputDir().convention(project.getLayout().getBuildDirectory().dir("cmake"));
 
         project.afterEvaluate((p)-> {
-            extension.getBinaries().all((target)-> {
+            extension.getTargets().all((target)-> {
                 Set<TargetMachine> targetMachines = new HashSet<>();
                 if (!target.getTargetMachines().isPresent()) {
                     targetMachines.add(hostMachine);
@@ -43,8 +44,14 @@ public class GradleCmakePlugin implements Plugin<Project> {
 
                 for (TargetMachine targetMachine : targetMachines) {
                     String name = String.format("%s_%s", target.getName(), targetMachine.getName());
-                    project.getComponents().add(new DefaultCmakeBinary(objectFactory, name,
-                            targetMachine, target.getCmakeLists()));
+                    DefaultCmakeBinary binary = new DefaultCmakeBinary(objectFactory,
+                            name, targetMachine,
+                            target.getCmakeLists(),
+                            extension.getOutputDir().dir(String.format("%s/%s",
+                                    target.getName(), targetMachine.getName()))
+                    );
+
+                    project.getComponents().add(binary);
                 }
             });
         });
@@ -55,7 +62,7 @@ public class GradleCmakePlugin implements Plugin<Project> {
                     (task) -> {
                         task.getCmakeListsFile().set(binary.getCmakeLists());
                         task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
-                        task.getOutputDir().set(extension.getOutputDir().dir(binary.getName()));
+                        task.getOutputDir().set(binary.getOutputDir());
                     });
 
             TaskProvider<MakeBuildTask> make = tasks.register(String.format("make%s", binary.getName()),
