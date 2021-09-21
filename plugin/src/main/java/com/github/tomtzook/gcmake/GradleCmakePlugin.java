@@ -50,8 +50,8 @@ public class GradleCmakePlugin implements Plugin<Project> {
             TaskProvider<CmakeBuildTask> cmake = tasks.register(String.format("cmake%s", binary.getName()),
                 CmakeBuildTask.class,
                 (task) -> {
-                    task.getCmakeListsFile().set(binary.getCmakeLists().get());
-                    task.getTarget().set(binary.getTargetMachine());
+                    task.getCmakeListsFile().set(binary.getCmakeLists());
+                    task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
                     task.getOutputDir().set(extension.getOutputDir().dir(binary.getName()));
                 });
 

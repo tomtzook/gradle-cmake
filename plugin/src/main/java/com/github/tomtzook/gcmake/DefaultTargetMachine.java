@@ -3,11 +3,7 @@ package com.github.tomtzook.gcmake;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
-public class DefaultTargetMachine implements TargetMachine, Serializable {
+public class DefaultTargetMachine implements TargetMachine {
 
     private final String mName;
     private final Provider<RegularFile> mToolchainFile;
@@ -25,15 +21,5 @@ public class DefaultTargetMachine implements TargetMachine, Serializable {
     @Override
     public Provider<RegularFile> getToolchainFile() {
         return mToolchainFile;
-    }
-
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.writeObject(mName);
-        if (mToolchainFile.isPresent()) {
-            s.writeBoolean(true);
-            s.writeObject(mToolchainFile.get().getAsFile());
-        } else {
-            s.writeBoolean(false);
-        }
     }
 }
