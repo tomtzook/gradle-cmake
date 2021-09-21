@@ -18,9 +18,12 @@ version = '1.0.0'
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
+    implementation 'com.github.tomtzook:castle:2.0.0-beta.3'
+
     testImplementation 'junit:junit:4.13'
 }
 
