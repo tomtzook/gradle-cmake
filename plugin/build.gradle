@@ -1,0 +1,37 @@
+plugins {
+    id 'java-gradle-plugin'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13'
+}
+
+gradlePlugin {
+    plugins {
+        greeting {
+            id = 'cmake'
+            implementationClass = 'com.github.tomtzook.gcmake.GradleCmakePlugin'
+        }
+    }
+}
+
+sourceSets {
+    functionalTest {
+    }
+}
+
+gradlePlugin.testSourceSets(sourceSets.functionalTest)
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+
+tasks.register('functionalTest', Test) {
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+tasks.named('check') {
+    dependsOn(tasks.functionalTest)
+}
