@@ -1,9 +1,20 @@
 plugins {
     id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.14.0'
+}
+
+pluginBundle {
+    website = 'https://www.gradle.org/'
+    vcsUrl = 'https://github.com/tomtzook/gradle-cmake'
+    tags = ['native', 'cmake']
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
+
+group = 'com.github.tomtzook'
+version = '1.0.0'
 
 repositories {
     jcenter()
@@ -16,7 +27,9 @@ dependencies {
 gradlePlugin {
     plugins {
         cmake {
-            id = 'cmake'
+            id = 'gradle-cmake'
+            displayName = 'Cmake for Gradle'
+            description = 'Integration for CMake projects with Gradle'
             implementationClass = 'com.github.tomtzook.gcmake.GradleCmakePlugin'
         }
     }
