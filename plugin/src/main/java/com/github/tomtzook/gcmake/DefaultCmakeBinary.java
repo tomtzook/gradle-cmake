@@ -14,13 +14,17 @@ public class DefaultCmakeBinary implements CmakeBinary {
     private final Provider<RegularFile> mCmakeLists;
     private final Provider<Directory> mOutputDir;
     private final Property<Task> mCompileTask;
+    private final Provider<String> mGenerator;
 
-    public DefaultCmakeBinary(ObjectFactory objectFactory, String name, TargetMachine machine, Provider<RegularFile> cmakeLists, Provider<Directory> outputDir) {
+    public DefaultCmakeBinary(ObjectFactory objectFactory, String name, TargetMachine machine,
+                              Provider<RegularFile> cmakeLists, Provider<Directory> outputDir,
+                              Provider<String> generator) {
         mName = name;
         mMachine = machine;
         mCmakeLists = cmakeLists;
         mOutputDir = outputDir;
         mCompileTask = objectFactory.property(Task.class);
+        mGenerator = generator;
     }
 
     @Override
@@ -46,5 +50,10 @@ public class DefaultCmakeBinary implements CmakeBinary {
     @Override
     public Provider<Directory> getOutputDir() {
         return mOutputDir;
+    }
+
+    @Override
+    public Provider<String> getGenerator() {
+        return mGenerator;
     }
 }

@@ -4,7 +4,6 @@ import com.github.tomtzook.gcmake.tasks.CmakeBuildTask;
 import com.github.tomtzook.gcmake.tasks.MakeBuildTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.Directory;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.TaskContainer;
@@ -48,8 +47,8 @@ public class GradleCmakePlugin implements Plugin<Project> {
                             name, targetMachine,
                             target.getCmakeLists(),
                             extension.getOutputDir().dir(String.format("%s/%s",
-                                    target.getName(), targetMachine.getName()))
-                    );
+                                    target.getName(), targetMachine.getName())),
+                            target.getGenerator());
 
                     project.getComponents().add(binary);
                 }
@@ -62,6 +61,7 @@ public class GradleCmakePlugin implements Plugin<Project> {
                     (task) -> {
                         task.getCmakeListsFile().set(binary.getCmakeLists());
                         task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
+                        task.getGenerator().set(binary.getGenerator());
                         task.getOutputDir().set(binary.getOutputDir());
                     });
 

@@ -5,6 +5,7 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
@@ -26,6 +27,10 @@ public abstract class CmakeBuildTask extends DefaultTask {
     @Optional
     public abstract RegularFileProperty getToolchainFile();
 
+    @Input
+    @Optional
+    public abstract Property<String> getGenerator();
+
     @OutputDirectory
     public abstract DirectoryProperty getOutputDir();
 
@@ -42,6 +47,10 @@ public abstract class CmakeBuildTask extends DefaultTask {
         ExecAction execAction = getExecActionFactory().newExecAction();
         execAction.workingDir(buildDir.getAsFile());
         execAction.executable("cmake");
+
+        if (getGenerator().isPresent()) {
+            execAction.args("-G", getGenerator().get());
+        }
 
         if (getToolchainFile().isPresent()) {
             RegularFile toolchainFile = getToolchainFile().get();
