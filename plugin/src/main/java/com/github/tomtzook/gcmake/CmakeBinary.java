@@ -8,4 +8,5 @@ public interface CmakeBinary extends Binary {
 
     Provider<RegularFile> getCmakeLists();
     Provider<Directory> getOutputDir();
+    Provider<String> getGenerator();
 }

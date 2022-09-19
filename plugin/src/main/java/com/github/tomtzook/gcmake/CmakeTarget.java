@@ -1,6 +1,7 @@
 package com.github.tomtzook.gcmake;
 
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 
 import javax.inject.Inject;
@@ -20,5 +21,5 @@ public abstract class CmakeTarget {
 
     public abstract RegularFileProperty getCmakeLists();
     public abstract SetProperty<TargetMachine> getTargetMachines();
-
+    public abstract Property<String> getGenerator();
 }
