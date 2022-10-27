@@ -1,10 +1,12 @@
 package com.github.tomtzook.gcmake.tasks;
 
+import com.github.tomtzook.gcmake.generator.CmakeGenerator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
@@ -29,7 +31,10 @@ public abstract class CmakeBuildTask extends DefaultTask {
 
     @Input
     @Optional
-    public abstract Property<String> getGenerator();
+    public abstract Property<CmakeGenerator> getGenerator();
+
+    @Input
+    public abstract ListProperty<String> getArgs();
 
     @OutputDirectory
     public abstract DirectoryProperty getOutputDir();
@@ -49,7 +54,7 @@ public abstract class CmakeBuildTask extends DefaultTask {
         execAction.executable("cmake");
 
         if (getGenerator().isPresent()) {
-            execAction.args("-G", getGenerator().get());
+            execAction.args("-G", getGenerator().get().getName());
         }
 
         if (getToolchainFile().isPresent()) {
@@ -57,7 +62,9 @@ public abstract class CmakeBuildTask extends DefaultTask {
             execAction.args(String.format(CMAKE_TOOLCHAIN_PARAM, toolchainFile.getAsFile().getAbsolutePath()));
         }
 
-        execAction.args(cmakeLists.getAsFile().getAbsoluteFile().getParent());
+        ListProperty<String> args = getArgs();
+        args.add(cmakeLists.getAsFile().getAbsoluteFile().getParent());
+        execAction.args(args.get());
 
         execAction.execute();
     }

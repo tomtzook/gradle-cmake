@@ -13,7 +13,7 @@ import org.gradle.process.internal.ExecActionFactory;
 
 import javax.inject.Inject;
 
-public abstract class MakeBuildTask extends DefaultTask implements CmakeGeneratorBuildTask {
+public abstract class NinjaBuildTask extends DefaultTask implements CmakeGeneratorBuildTask {
 
     @Input
     public abstract ListProperty<String> getArgs();
@@ -32,7 +32,7 @@ public abstract class MakeBuildTask extends DefaultTask implements CmakeGenerato
 
         ExecAction execAction = getExecActionFactory().newExecAction();
         execAction.workingDir(buildDir.getAsFile());
-        execAction.executable("make");
+        execAction.executable("ninja");
 
         if (getArgs().isPresent()) {
             execAction.args(getArgs().get());
