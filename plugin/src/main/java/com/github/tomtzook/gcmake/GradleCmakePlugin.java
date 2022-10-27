@@ -2,6 +2,8 @@ package com.github.tomtzook.gcmake;
 
 import com.github.tomtzook.gcmake.generator.CmakeGenerator;
 import com.github.tomtzook.gcmake.generator.CmakeGeneratorBuildTask;
+import com.github.tomtzook.gcmake.generator.CmakeGeneratorFactory;
+import com.github.tomtzook.gcmake.generator.DefaultCmakeGeneratorFactory;
 import com.github.tomtzook.gcmake.generator.KnownCmakeGenerators;
 import com.github.tomtzook.gcmake.tasks.CmakeBuildTask;
 import com.github.tomtzook.gcmake.tasks.MakeBuildTask;
@@ -27,6 +29,9 @@ public class GradleCmakePlugin implements Plugin<Project> {
         TargetMachineFactory targetMachineFactory = new DefaultTargetMachineFactory(objectFactory);
         project.getExtensions().add(TargetMachineFactory.class, "machines", targetMachineFactory);
         TargetMachine hostMachine = targetMachineFactory.getHost();
+
+        CmakeGeneratorFactory cmakeGeneratorFactory = new DefaultCmakeGeneratorFactory(objectFactory);
+        project.getExtensions().add(CmakeGeneratorFactory.class, "generators", cmakeGeneratorFactory);
 
         GradleCmakeExtension extension = project.getExtensions().create("cmake", GradleCmakeExtension.class);
         extension.getOutputDir().convention(project.getLayout().getBuildDirectory().dir("cmake"));
@@ -71,7 +76,8 @@ public class GradleCmakePlugin implements Plugin<Project> {
                         task.getOutputDir().set(binary.getOutputDir());
                     });
 
-            String generatorTaskName = String.format("runGenerator%s",
+            String generatorTaskName = String.format("%s_runGenerator%s",
+                    binary.getName(),
                     generator.getName().replace(' ', '_'));
             TaskProvider<? extends Task> generatorTask = generator.registerBuildTask(generatorTaskName, tasks,
                     (task) -> {
