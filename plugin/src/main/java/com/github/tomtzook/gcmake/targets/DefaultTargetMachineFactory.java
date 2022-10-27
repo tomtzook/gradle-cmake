@@ -1,4 +1,4 @@
-package com.github.tomtzook.gcmake;
+package com.github.tomtzook.gcmake.targets;
 
 import com.castle.util.os.Platform;
 import com.castle.util.os.System;

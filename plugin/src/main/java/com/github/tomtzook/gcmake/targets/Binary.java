@@ -1,4 +1,4 @@
-package com.github.tomtzook.gcmake;
+package com.github.tomtzook.gcmake.targets;
 
 import org.gradle.api.Task;
 import org.gradle.api.component.SoftwareComponent;

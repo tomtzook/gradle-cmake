@@ -1,5 +1,6 @@
 package com.github.tomtzook.gcmake;
 
+import com.github.tomtzook.gcmake.targets.CmakeTarget;
 import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;

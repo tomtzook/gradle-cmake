@@ -1,4 +1,4 @@
-package com.github.tomtzook.gcmake;
+package com.github.tomtzook.gcmake.targets;
 
 import com.github.tomtzook.gcmake.generator.CmakeGenerator;
 import org.gradle.api.file.Directory;

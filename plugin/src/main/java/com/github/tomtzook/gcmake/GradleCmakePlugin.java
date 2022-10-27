@@ -1,12 +1,15 @@
 package com.github.tomtzook.gcmake;
 
 import com.github.tomtzook.gcmake.generator.CmakeGenerator;
-import com.github.tomtzook.gcmake.generator.CmakeGeneratorBuildTask;
 import com.github.tomtzook.gcmake.generator.CmakeGeneratorFactory;
 import com.github.tomtzook.gcmake.generator.DefaultCmakeGeneratorFactory;
 import com.github.tomtzook.gcmake.generator.KnownCmakeGenerators;
+import com.github.tomtzook.gcmake.targets.Binary;
+import com.github.tomtzook.gcmake.targets.DefaultCmakeBinary;
+import com.github.tomtzook.gcmake.targets.DefaultTargetMachineFactory;
+import com.github.tomtzook.gcmake.targets.TargetMachine;
+import com.github.tomtzook.gcmake.targets.TargetMachineFactory;
 import com.github.tomtzook.gcmake.tasks.CmakeBuildTask;
-import com.github.tomtzook.gcmake.tasks.MakeBuildTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
