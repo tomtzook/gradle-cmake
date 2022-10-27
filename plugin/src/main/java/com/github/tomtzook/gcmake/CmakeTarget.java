@@ -2,6 +2,7 @@ package com.github.tomtzook.gcmake;
 
 import com.github.tomtzook.gcmake.generator.CmakeGenerator;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 
@@ -23,4 +24,6 @@ public abstract class CmakeTarget {
     public abstract RegularFileProperty getCmakeLists();
     public abstract SetProperty<TargetMachine> getTargetMachines();
     public abstract Property<CmakeGenerator> getGenerator();
+    public abstract ListProperty<String> getCmakeArgs();
+    public abstract ListProperty<String> getGeneratorArgs();
 }

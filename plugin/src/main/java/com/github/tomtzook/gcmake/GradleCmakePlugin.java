@@ -58,6 +58,8 @@ public class GradleCmakePlugin implements Plugin<Project> {
                             extension.getOutputDir().dir(String.format("%s/%s",
                                     target.getName(), targetMachine.getName())),
                             target.getGenerator());
+                    binary.getCmakeArgs().set(target.getCmakeArgs());
+                    binary.getGeneratorArgs().set(target.getGeneratorArgs());
 
                     project.getComponents().add(binary);
                 }
@@ -74,6 +76,7 @@ public class GradleCmakePlugin implements Plugin<Project> {
                         task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
                         task.getGenerator().set(generator);
                         task.getOutputDir().set(binary.getOutputDir());
+                        task.getArgs().set(binary.getCmakeArgs());
                     });
 
             String generatorTaskName = String.format("%s_runGenerator%s",
@@ -83,6 +86,7 @@ public class GradleCmakePlugin implements Plugin<Project> {
                     (task) -> {
                 task.dependsOn(cmake);
                 task.getBuildDir().set(cmake.get().getOutputDir());
+                task.getArgs().set(binary.getGeneratorArgs());
             });
 
             binary.getCompileTask().set(generatorTask);
