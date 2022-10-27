@@ -1,9 +1,13 @@
 package com.github.tomtzook.gcmake;
 
+import com.github.tomtzook.gcmake.generator.CmakeGenerator;
+import com.github.tomtzook.gcmake.generator.CmakeGeneratorBuildTask;
+import com.github.tomtzook.gcmake.generator.KnownCmakeGenerators;
 import com.github.tomtzook.gcmake.tasks.CmakeBuildTask;
 import com.github.tomtzook.gcmake.tasks.MakeBuildTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.TaskContainer;
@@ -56,23 +60,26 @@ public class GradleCmakePlugin implements Plugin<Project> {
         });
 
         project.getComponents().withType(DefaultCmakeBinary.class, (binary)-> {
+            CmakeGenerator generator = binary.getGenerator().getOrElse(KnownCmakeGenerators.UNIX_MAKEFILES);
+
             TaskProvider<CmakeBuildTask> cmake = tasks.register(String.format("cmake%s", binary.getName()),
                     CmakeBuildTask.class,
                     (task) -> {
                         task.getCmakeListsFile().set(binary.getCmakeLists());
                         task.getToolchainFile().set(binary.getTargetMachine().getToolchainFile());
-                        task.getGenerator().set(binary.getGenerator());
+                        task.getGenerator().set(generator);
                         task.getOutputDir().set(binary.getOutputDir());
                     });
 
-            TaskProvider<MakeBuildTask> make = tasks.register(String.format("make%s", binary.getName()),
-                    MakeBuildTask.class,
+            String generatorTaskName = String.format("runGenerator%s",
+                    generator.getName().replace(' ', '_'));
+            TaskProvider<? extends Task> generatorTask = generator.registerBuildTask(generatorTaskName, tasks,
                     (task) -> {
-                        task.dependsOn(cmake);
-                        task.getBuildDir().set(cmake.get().getOutputDir());
-                    });
+                task.dependsOn(cmake);
+                task.getBuildDir().set(cmake.get().getOutputDir());
+            });
 
-            binary.getCompileTask().set(make);
+            binary.getCompileTask().set(generatorTask);
         });
 
         tasks.register("cmakeClean", Delete.class,

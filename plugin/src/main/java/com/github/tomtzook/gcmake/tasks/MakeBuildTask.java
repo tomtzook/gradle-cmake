@@ -1,11 +1,9 @@
 package com.github.tomtzook.gcmake.tasks;
 
+import com.github.tomtzook.gcmake.generator.CmakeGeneratorBuildTask;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFile;
-import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.internal.ExecAction;
@@ -13,7 +11,7 @@ import org.gradle.process.internal.ExecActionFactory;
 
 import javax.inject.Inject;
 
-public abstract class MakeBuildTask extends DefaultTask {
+public abstract class MakeBuildTask extends DefaultTask implements CmakeGeneratorBuildTask {
 
     @OutputDirectory
     public abstract DirectoryProperty getBuildDir();

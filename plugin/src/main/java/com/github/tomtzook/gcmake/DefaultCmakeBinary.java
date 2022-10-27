@@ -1,5 +1,6 @@
 package com.github.tomtzook.gcmake;
 
+import com.github.tomtzook.gcmake.generator.CmakeGenerator;
 import org.gradle.api.Task;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.RegularFile;
@@ -14,11 +15,11 @@ public class DefaultCmakeBinary implements CmakeBinary {
     private final Provider<RegularFile> mCmakeLists;
     private final Provider<Directory> mOutputDir;
     private final Property<Task> mCompileTask;
-    private final Provider<String> mGenerator;
+    private final Provider<CmakeGenerator> mGenerator;
 
     public DefaultCmakeBinary(ObjectFactory objectFactory, String name, TargetMachine machine,
                               Provider<RegularFile> cmakeLists, Provider<Directory> outputDir,
-                              Provider<String> generator) {
+                              Provider<CmakeGenerator> generator) {
         mName = name;
         mMachine = machine;
         mCmakeLists = cmakeLists;
@@ -53,7 +54,7 @@ public class DefaultCmakeBinary implements CmakeBinary {
     }
 
     @Override
-    public Provider<String> getGenerator() {
+    public Provider<CmakeGenerator> getGenerator() {
         return mGenerator;
     }
 }
