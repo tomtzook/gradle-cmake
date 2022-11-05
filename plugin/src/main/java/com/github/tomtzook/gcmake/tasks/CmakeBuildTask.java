@@ -17,6 +17,8 @@ import org.gradle.process.internal.ExecAction;
 import org.gradle.process.internal.ExecActionFactory;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CmakeBuildTask extends DefaultTask {
 
@@ -62,9 +64,14 @@ public abstract class CmakeBuildTask extends DefaultTask {
             execAction.args(String.format(CMAKE_TOOLCHAIN_PARAM, toolchainFile.getAsFile().getAbsolutePath()));
         }
 
-        ListProperty<String> args = getArgs();
+        List<String> args = new ArrayList<>();
+        ListProperty<String> argsProp = getArgs();
+        if (argsProp.isPresent()) {
+            args.addAll(argsProp.get());
+        }
+
         args.add(cmakeLists.getAsFile().getAbsoluteFile().getParent());
-        execAction.args(args.get());
+        execAction.args(args);
 
         execAction.execute();
     }
