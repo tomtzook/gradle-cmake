@@ -14,7 +14,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 group = 'io.github.tomtzook'
-version = '1.2.1'
+version = '1.2.2'
 
 repositories {
     jcenter()
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.tomtzook:castle:2.0.0-beta.3'
+    implementation 'com.github.tomtzook:castle:2.0.0'
 
     testImplementation 'junit:junit:4.13'
 }
