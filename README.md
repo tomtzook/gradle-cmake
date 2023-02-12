@@ -1,4 +1,7 @@
 # gradle-cmake
+
+![plugins portal shield](https://img.shields.io/gradle-plugin-portal/v/io.github.tomtzook.gradle-cmake)
+
 A Gradle integration plugin for CMake
 
 
